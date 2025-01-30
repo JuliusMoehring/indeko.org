@@ -1,5 +1,18 @@
-// @ts-check
-import { defineConfig } from 'astro/config';
+import sitemap from "@astrojs/sitemap";
+import svelte from "@astrojs/svelte";
+import tailwindcss from "@tailwindcss/vite";
+import { defineConfig, envField } from "astro/config";
 
-// https://astro.build/config
-export default defineConfig({});
+export default defineConfig({
+    site: "https://juliusmoehring.github.io",
+    base: "indeko.org",
+    env: {
+        schema: {
+            VERSION: envField.string({ context: "server", access: "public" }),
+        },
+    },
+    vite: {
+        plugins: [tailwindcss()],
+    },
+    integrations: [sitemap(), svelte()],
+});

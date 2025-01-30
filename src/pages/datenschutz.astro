@@ -1,0 +1,23 @@
+---
+import Prose from "@/components/prose.astro";
+import Layout from "@/layouts/Layout.astro";
+import { getEntry, render } from "astro:content";
+
+const entry = await getEntry("legal", "privacy");
+
+if (!entry) {
+    throw new Error("Entry not found");
+}
+
+const { Content } = await render(entry);
+---
+
+<Layout>
+    <div class="py-8 space-y-8 max-w-prose">
+        <h1 class="text-3xl font-semibold">Datenschutz</h1>
+
+        <Prose>
+            <Content />
+        </Prose>
+    </div>
+</Layout>

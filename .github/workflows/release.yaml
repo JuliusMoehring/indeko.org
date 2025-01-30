@@ -1,0 +1,85 @@
+name: "🚀 Release"
+
+on:
+    release:
+        types: [published]
+
+permissions:
+    contents: write
+    pages: write
+    id-token: write
+
+jobs:
+    version:
+        name: 🏷️ Version
+        runs-on: ubuntu-latest
+        environment: production
+        outputs:
+            TAG: ${{ steps.tag.outputs.TAG }}
+            VERSION: ${{ steps.version.outputs.VERSION }}
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Get tag
+              id: tag
+              run: |
+                  TAG="${{ github.event.release.tag_name }}"
+
+                  echo "TAG=${TAG}" >> $GITHUB_OUTPUT
+                  echo "Tag: ${TAG}"
+
+            - name: Create version
+              id: version
+              run: |
+                  VERSION="${{ steps.tag.outputs.TAG }}_${{ github.run_id }}_$(date +'%Y-%m-%d_%H-%M-%S')"
+
+                  echo "VERSION=${VERSION}" >> $GITHUB_OUTPUT
+                  echo "Generated version: ${VERSION}"
+
+    build:
+        name: 🏗️ Build
+        runs-on: ubuntu-latest
+        needs: version
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Install pnpm
+              uses: pnpm/action-setup@v4
+              with:
+                  version: 9
+                  run_install: false
+
+            - name: Install Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: "pnpm"
+
+            - name: Install dependencies
+              run: pnpm install
+
+            - name: Build application
+              env:
+                  VERSION: ${{ needs.version.outputs.VERSION }}
+              run: pnpm build
+
+            - name: Upload artifact
+              uses: actions/upload-pages-artifact@v3
+              with:
+                  name: ${{ needs.version.outputs.VERSION }}
+                  path: dist
+
+    release:
+        name: 🚀 Release
+        runs-on: ubuntu-latest
+        needs: [version, build]
+        environment:
+            name: production
+            url: ${{ steps.deployment.outputs.page_url }}
+        steps:
+            - name: Deploy to Github pages
+              id: deployment
+              uses: actions/deploy-pages@v4
+              with:
+                  artifact_name: ${{ needs.version.outputs.VERSION }}
