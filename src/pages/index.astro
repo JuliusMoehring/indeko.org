@@ -1,11 +1,23 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import Layout from "@/layouts/Layout.astro";
+import { Construction } from "lucide-astro";
 ---
 
 <Layout>
-	<Welcome />
+    <div class="flex items-center justify-center h-full grow py-40">
+        <div
+            class="max-w-prose w-full rounded-xl shadow-xl border border-gray-200 p-8 space-y-8"
+        >
+            <Construction class="size-20 mx-auto text-gray-500" />
+
+            <div class="text-center space-y-2">
+                <h1 class="text-3xl font-semibold">Wartungsarbeiten</h1>
+                <p>
+                    Unsere Website wird derzeit gewartet. Wir sind bald wieder
+                    für Sie da!
+                </p>
+                <p>Vielen Dank für Ihr Verständnis.</p>
+            </div>
+        </div>
+    </div>
 </Layout>
