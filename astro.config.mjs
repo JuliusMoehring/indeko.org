@@ -4,8 +4,7 @@ import tailwindcss from "@tailwindcss/vite";
 import { defineConfig, envField } from "astro/config";
 
 export default defineConfig({
-    site: "https://juliusmoehring.github.io",
-    base: "indeko.org",
+    site: "https://indeko.org",
     env: {
         schema: {
             VERSION: envField.string({ context: "server", access: "public" }),
